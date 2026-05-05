@@ -14,7 +14,7 @@ public enum Faixa {
     }
 
     public boolean podeAvancarParaProximaFaixa(Faixa novaFaixa) {
-        return this.ordinal() == novaFaixa.ordinal() + 1;
+        return novaFaixa.ordinal() == this.ordinal() + 1;
     }
 
     public boolean idadePermitida(int idade) {
