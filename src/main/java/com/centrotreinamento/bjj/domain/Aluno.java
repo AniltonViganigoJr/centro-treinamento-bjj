@@ -18,25 +18,37 @@ public class Aluno {
     @GeneratedValue
     private UUID id;
     private String nome;
-    private Integer idade;
+    private int idade;
     private String email;
     private String telefone;
     
     @Enumerated(EnumType.STRING)
     private Faixa faixa;
-    private Integer graus;
+    private int graus;
     private LocalDate dataMatricula;
-    private Boolean ativo;
+    private boolean ativo;
 
     public Aluno () {}
 
-    public Aluno(String nome, Integer idade, String email, String telefone) {
+    public Aluno(String nome, int idade, String email, String telefone) {
+        
+        if (nome == null || nome.isBlank()) {
+            throw new IllegalArgumentException("Nome é obrigatório");
+        }
+
+        if (idade < 4) {
+            throw new IllegalArgumentException("Idade inválida");
+        }
+
+        if (email == null || email.isBlank()) {
+            throw new IllegalArgumentException("E-mail é obrigatório");
+        }
         
         this.nome = nome;
         this.idade = idade;
         this.email = email;
         this.telefone = telefone;
-        this.faixa = faixa.BRANCA;
+        this.faixa = Faixa.BRANCA;
         this.graus = 0;
         this.dataMatricula = LocalDate.now();
         this.ativo = true;
@@ -50,6 +62,10 @@ public class Aluno {
         
         if (!ativo) {
             throw new IllegalStateException("Aluno inativo não pode ser graduado");
+        }
+
+        if (this.faixa == novaFaixa) {
+            throw new IllegalStateException("Aluno já está nessa faixa");
         }
 
         if (this.graus < 4) {
@@ -80,6 +96,14 @@ public class Aluno {
         this.graus++;
     }
 
+    public void desativar() {
+        this.ativo = false;
+    }
+    
+    public void ativar() {
+        this.ativo = true;
+    }
+
     public UUID getId() {
         return id;
     }
@@ -90,6 +114,10 @@ public class Aluno {
 
     public Faixa getFaixa() {
         return faixa;
+    }
+
+    public int getGraus() {
+        return graus;
     }
 
     public LocalDate getDataMatricula() {
