@@ -7,12 +7,13 @@ import org.springframework.stereotype.Service;
 
 import com.centrotreinamento.bjj.domain.Aluno;
 import com.centrotreinamento.bjj.domain.enums.Faixa;
+import com.centrotreinamento.bjj.exception.AlunoNaoEncontradoException;
 import com.centrotreinamento.bjj.repository.AlunoRepository;
 
 @Service
 public class AlunoService {
     
-    private AlunoRepository alunoRepository;
+    private final AlunoRepository alunoRepository;
 
     public AlunoService(AlunoRepository alunoRepository) {
         this.alunoRepository = alunoRepository;
@@ -28,7 +29,7 @@ public class AlunoService {
 
     public Aluno buscarPorId(UUID id) {
         return alunoRepository.findById(id).
-               orElseThrow(() -> new RuntimeException("Aluno não encontrado")); 
+               orElseThrow(AlunoNaoEncontradoException::new); 
     }
 
     public Aluno adicionarGrau(UUID id) {
@@ -38,8 +39,12 @@ public class AlunoService {
     }
 
     public Aluno graduarFaixa(UUID id, String faixa) {
+        if (faixa == null || faixa.isBlank()) {
+            throw new IllegalArgumentException("Faixa inválida");
+        }
+
         Aluno aluno = buscarPorId(id);
-        Faixa novaFaixa = Faixa.valueOf(faixa.toUpperCase());
+        Faixa novaFaixa = Faixa.converter(faixa);
         aluno.graduarFaixa(novaFaixa);
         return alunoRepository.save(aluno);
     }
