@@ -111,6 +111,10 @@ public class Aluno {
     public String getNome() {
         return nome;
     }
+    
+    public String getEmail() {
+        return email;
+    }
 
     public Faixa getFaixa() {
         return faixa;
