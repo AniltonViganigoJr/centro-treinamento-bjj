@@ -20,4 +20,13 @@ public enum Faixa {
     public boolean idadePermitida(int idade) {
         return idade >= this.idadeMinina;
     }
+
+    public static Faixa converter(String valor) {
+
+        try {
+            return Faixa.valueOf(valor.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Faixa inválida");
+        }
+    }
 }
