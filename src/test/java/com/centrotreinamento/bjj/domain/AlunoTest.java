@@ -3,14 +3,21 @@ package com.centrotreinamento.bjj.domain;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.UUID;
+
 import org.junit.jupiter.api.Test;
 
 import com.centrotreinamento.bjj.domain.enums.Faixa;
 
 public class AlunoTest {
 
+    private UUID gerarId() {
+        return UUID.randomUUID();
+    }
+
     private Aluno criarAlunoValido() {
-        return new Aluno(
+        UUID id = gerarId();
+        return new Aluno(id,
             "Aluno Mock", 
             18, 
             "alunomock@mocktest.com.br", 
@@ -72,7 +79,7 @@ public class AlunoTest {
     void naoDeveAceitarNomeNulo() {
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
-            () -> new Aluno(
+            () -> new Aluno(gerarId(),
             null, 
             18, 
             "alunomock@mocktest.com.br", 
@@ -85,7 +92,7 @@ public class AlunoTest {
     @Test
     void naoDeveAceitarEmailNulo() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-            () -> new Aluno("Aluno Mock", 20,null , "51999998877")
+            () -> new Aluno(gerarId(), "Aluno Mock", 20,null , "51999998877")
         );
 
         assertEquals("E-mail é obrigatório", exception.getMessage());
@@ -94,7 +101,7 @@ public class AlunoTest {
     @Test
     void naoDeveAceitarIdadeMenorQuatroAnos() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
-            () -> new Aluno("Aluno Mock", 0, "alunomock@mocktest.com.br", "51999998877")
+            () -> new Aluno(gerarId(), "Aluno Mock", 0, "alunomock@mocktest.com.br", "51999998877")
         );
 
         assertEquals("Idade inválida", exception.getMessage());
@@ -155,7 +162,7 @@ public class AlunoTest {
     @Test
     void naoDeveGraduarAlunoMenorDeIdadeParaFaixaAzul() {
         
-        Aluno aluno = new Aluno("Aluno Mock", 15, "alunomock@mocktest.com.br", "51998887715");
+        Aluno aluno = new Aluno(gerarId(), "Aluno Mock", 15, "alunomock@mocktest.com.br", "51998887715");
 
         adicionarQuatroGraus(aluno);
 

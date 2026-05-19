@@ -23,12 +23,13 @@ import com.centrotreinamento.bjj.repository.AlunoRepository;
 @ExtendWith(MockitoExtension.class)
 public class AlunoServiceTest {
     
-    private UUID gerarIdValido() {
+    private UUID gerarId() {
         return UUID.randomUUID();
     }
 
     private Aluno criarAlunoValido() {
-        return new Aluno(
+        UUID id = gerarId(); 
+        return new Aluno(id,
             "Aluno Mock", 
             18, 
             "alunomock@mocktest.com.br", 
@@ -64,7 +65,7 @@ public class AlunoServiceTest {
     @Test
     void deveBuscarAlunoPorID() {
 
-        UUID id = gerarIdValido();
+        UUID id = gerarId();
 
         Aluno aluno = criarAlunoValido();
 
@@ -78,7 +79,7 @@ public class AlunoServiceTest {
     @Test
     void naoDeveBuscarAlunoInexistente() {
         
-        UUID id = gerarIdValido();
+        UUID id = gerarId();
 
         when(alunoRepository.findById(id)).thenReturn(Optional.empty());
 
@@ -94,7 +95,7 @@ public class AlunoServiceTest {
     @Test
     void deveAdicionarGrau() {
 
-        UUID id = gerarIdValido();
+        UUID id = gerarId();
 
         Aluno aluno = criarAlunoValido();
         
@@ -114,7 +115,7 @@ public class AlunoServiceTest {
     @Test
     void deveGraduarFaixa() {
         
-        UUID id = gerarIdValido();
+        UUID id = gerarId();
     
         Aluno aluno = criarAlunoValido();
 
@@ -135,7 +136,7 @@ public class AlunoServiceTest {
     @Test
     void naoDeveGraduarFaixaInvalida() {
 
-        UUID id = gerarIdValido();
+        UUID id = gerarId();
 
         Aluno aluno = criarAlunoValido();
 

@@ -19,8 +19,14 @@ import com.centrotreinamento.bjj.domain.enums.Faixa;
 @DataJpaTest
 public class AlunoRepositoryTest {
 
+    public UUID gerarId() {
+        return UUID.randomUUID();
+    }
+
     private Aluno criarAlunoValido() {
-        return new Aluno(
+        UUID id = gerarId();
+
+        return new Aluno(id,
             "Aluno Mock",
             20, 
             "alunomock@alunomock.com.br", 
@@ -117,7 +123,9 @@ public class AlunoRepositoryTest {
         
         Aluno alunoAtivo = criarAlunoValido();
         
-        Aluno alunoInativo = new Aluno(
+        UUID idInativo = gerarId();
+
+        Aluno alunoInativo = new Aluno(idInativo,
             "Aluno Mock Inativo",
             30, 
             "alunomockinativo@mock.com.br", 
@@ -144,8 +152,9 @@ public class AlunoRepositoryTest {
 
         Aluno alunoIniciante = criarAlunoValido();
 
-        
-        Aluno alunoGraduado = new Aluno(
+        UUID idGraduado = gerarId();
+
+        Aluno alunoGraduado = new Aluno(idGraduado,
             "Aluno Mock Graduado",
             30, 
             "alunomockgraduado@mock.com.br", 
