@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 
 import com.centrotreinamento.bjj.domain.Aluno;
 import com.centrotreinamento.bjj.domain.enums.Faixa;
+import com.centrotreinamento.bjj.dto.response.AlunoResponseDTO;
 import com.centrotreinamento.bjj.exception.AlunoNaoEncontradoException;
+import com.centrotreinamento.bjj.mapper.AlunoMapper;
 import com.centrotreinamento.bjj.repository.AlunoRepository;
 
 @Service
@@ -23,8 +25,11 @@ public class AlunoService {
         return alunoRepository.save(aluno);
     }
 
-    public List<Aluno> listar() {
-        return alunoRepository.findAll();
+    public List<AlunoResponseDTO> listar() {
+        return alunoRepository.findAll()
+            .stream()
+            .map(AlunoMapper::toResponseDTO)
+            .toList();
     }
 
     public Aluno buscarPorId(UUID id) {
