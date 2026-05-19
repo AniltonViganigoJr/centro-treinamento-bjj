@@ -30,7 +30,7 @@ public class Aluno {
 
     public Aluno () {}
 
-    public Aluno(String nome, int idade, String email, String telefone) {
+    public Aluno(UUID id, String nome, int idade, String email, String telefone) {
         
         if (nome == null || nome.isBlank()) {
             throw new IllegalArgumentException("Nome é obrigatório");
@@ -114,6 +114,10 @@ public class Aluno {
     
     public String getEmail() {
         return email;
+    }
+
+    public String getTelefone() {
+        return telefone;
     }
 
     public Faixa getFaixa() {
