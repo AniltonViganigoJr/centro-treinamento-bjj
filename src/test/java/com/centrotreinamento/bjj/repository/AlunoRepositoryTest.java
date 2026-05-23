@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -12,42 +13,58 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.centrotreinamento.bjj.domain.Aluno;
 import com.centrotreinamento.bjj.domain.enums.Faixa;
 
 @DataJpaTest
+@Testcontainers
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class AlunoRepositoryTest {
 
-    public UUID gerarId() {
-        return UUID.randomUUID();
+    @Container
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16-alpine")
+            .withDatabaseName("testdb")
+            .withUsername("postgres")
+            .withPassword("postgres")
+            .withStartupTimeout(Duration.ofSeconds(60));
+
+    @DynamicPropertySource
+    static void configureProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", postgres::getJdbcUrl);
+        registry.add("spring.datasource.username", postgres::getUsername);
+        registry.add("spring.datasource.password", postgres::getPassword);
     }
 
     private Aluno criarAlunoValido() {
-        UUID id = gerarId();
-
-        return new Aluno(id,
-            "Aluno Mock",
-            20, 
-            "alunomock@alunomock.com.br", 
-            "55987452355");
+        return new Aluno(
+                "Aluno Mock",
+                20,
+                "alunomock@alunomock.com.br",
+                "55987452355");
     }
-    
+
     private void adicionarQuatroGraus(Aluno aluno) {
         aluno.adicionarGrau();
         aluno.adicionarGrau();
         aluno.adicionarGrau();
         aluno.adicionarGrau();
     }
-    
+
     @Autowired
     private AlunoRepository alunoRepository;
-    
+
     @Test
     void deveSalvarAluno() {
-    
+
         Aluno aluno = criarAlunoValido();
-    
+
         Aluno alunoSalvo = alunoRepository.save(aluno);
 
         assertNotNull(alunoSalvo.getId());
@@ -55,44 +72,44 @@ public class AlunoRepositoryTest {
 
     @Test
     void deveBuscarAlunoPorId() {
-        
+
         Aluno aluno = criarAlunoValido();
         Aluno alunoSalvo = alunoRepository.save(aluno);
-        
+
         UUID id = alunoSalvo.getId();
 
         Optional<Aluno> resultado = alunoRepository.findById(id);
 
         assertTrue(resultado.isPresent());
-        
+
         Aluno alunoEncontrado = resultado.get();
-        
-        assertEquals("Aluno Mock", alunoEncontrado.getNome());
+
+        assertEquals(aluno.getNome(), alunoEncontrado.getNome());
     }
 
     @Test
     void deveListarAlunos() {
         Aluno aluno = criarAlunoValido();
-        
+
         alunoRepository.save(aluno);
-        
+
         List<Aluno> resultado = alunoRepository.findAll();
         assertEquals(1, resultado.size());
         assertFalse(resultado.isEmpty());
-        
+
         Aluno alunoEncontrado = resultado.get(0);
-        assertEquals("Aluno Mock", alunoEncontrado.getNome());
+        assertEquals(aluno.getNome(), alunoEncontrado.getNome());
     }
-    
+
     @Test
     void deveDeletarAluno() {
-        
+
         Aluno aluno = criarAlunoValido();
 
-        Aluno alunoSalvo  = alunoRepository.save(aluno);
+        Aluno alunoSalvo = alunoRepository.save(aluno);
 
         UUID id = alunoSalvo.getId();
-        
+
         alunoRepository.deleteById(id);
 
         Optional<Aluno> resultado = alunoRepository.findById(id);
@@ -102,42 +119,40 @@ public class AlunoRepositoryTest {
 
     @Test
     void deveBuscarAlunoPorEmail() {
-        
+
         Aluno aluno = criarAlunoValido();
 
         Aluno alunoSalvo = alunoRepository.save(aluno);
-        
+
         Optional<Aluno> resultado = alunoRepository.findByEmail(alunoSalvo.getEmail());
-        
+
         assertTrue(resultado.isPresent());
-        
+
         Aluno alunoEncontrado = resultado.get();
-        
-        assertEquals("Aluno Mock", alunoEncontrado.getNome());
+
+        assertEquals(alunoSalvo.getNome(), alunoEncontrado.getNome());
         assertEquals(alunoSalvo.getEmail(), alunoEncontrado.getEmail());
         assertEquals(alunoSalvo.getId(), alunoEncontrado.getId());
     }
-    
+
     @Test
     void deveListarAlunosAtivos() {
-        
-        Aluno alunoAtivo = criarAlunoValido();
-        
-        UUID idInativo = gerarId();
 
-        Aluno alunoInativo = new Aluno(idInativo,
-            "Aluno Mock Inativo",
-            30, 
-            "alunomockinativo@mock.com.br", 
-            "48978456633");
-    
+        Aluno alunoAtivo = criarAlunoValido();
+
+        Aluno alunoInativo = new Aluno(
+                "Aluno Mock Inativo",
+                30,
+                "alunomockinativo@mock.com.br",
+                "48978456633");
+
         alunoInativo.desativar();
 
         alunoRepository.save(alunoAtivo);
         alunoRepository.save(alunoInativo);
 
         List<Aluno> resultado = alunoRepository.findByAtivoTrue();
-        
+
         assertEquals(1, resultado.size());
 
         Aluno alunoEncontrado = resultado.get(0);
@@ -152,23 +167,21 @@ public class AlunoRepositoryTest {
 
         Aluno alunoIniciante = criarAlunoValido();
 
-        UUID idGraduado = gerarId();
+        Aluno alunoGraduado = new Aluno(
+                "Aluno Mock Graduado",
+                30,
+                "alunomockgraduado@mock.com.br",
+                "48978456633");
 
-        Aluno alunoGraduado = new Aluno(idGraduado,
-            "Aluno Mock Graduado",
-            30, 
-            "alunomockgraduado@mock.com.br", 
-            "48978456633");
-            
         adicionarQuatroGraus(alunoGraduado);
-            
+
         alunoGraduado.graduarFaixa(Faixa.AZUL);
-            
+
         alunoRepository.save(alunoIniciante);
         alunoRepository.save(alunoGraduado);
-        
+
         List<Aluno> resultado = alunoRepository.findByFaixa(Faixa.AZUL);
-        assertEquals(1,resultado.size());
+        assertEquals(1, resultado.size());
 
         Aluno alunoEncontrado = resultado.get(0);
 
