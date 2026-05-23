@@ -3,6 +3,9 @@ package com.centrotreinamento.bjj.domain;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import com.centrotreinamento.bjj.domain.enums.Faixa;
 
 import jakarta.persistence.Entity;
@@ -22,6 +25,7 @@ public class Aluno {
     private String email;
     private String telefone;
     
+    @JdbcTypeCode(SqlTypes.VARCHAR)
     @Enumerated(EnumType.STRING)
     private Faixa faixa;
     private int graus;
@@ -30,7 +34,7 @@ public class Aluno {
 
     public Aluno () {}
 
-    public Aluno(UUID id, String nome, int idade, String email, String telefone) {
+    public Aluno(String nome, int idade, String email, String telefone) {
         
         if (nome == null || nome.isBlank()) {
             throw new IllegalArgumentException("Nome é obrigatório");
