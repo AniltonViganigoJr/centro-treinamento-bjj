@@ -11,7 +11,6 @@ public class AlunoMapper {
     public static Aluno toEntity(AlunoRequestDTO dto) {
 
         return new Aluno(
-            dto.id(),
             dto.nome(),
             dto.idade(),
             dto.email(),
