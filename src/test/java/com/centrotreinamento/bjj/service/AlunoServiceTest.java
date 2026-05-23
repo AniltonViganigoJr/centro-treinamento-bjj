@@ -22,18 +22,18 @@ import com.centrotreinamento.bjj.repository.AlunoRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class AlunoServiceTest {
-    
+
     private UUID gerarId() {
         return UUID.randomUUID();
     }
 
     private Aluno criarAlunoValido() {
-        UUID id = gerarId(); 
-        return new Aluno(id,
-            "Aluno Mock", 
-            18, 
-            "alunomock@mocktest.com.br", 
-            "51999655541");
+        UUID id = gerarId();
+        return new Aluno(
+                "Aluno Mock",
+                18,
+                "alunomock@mocktest.com.br",
+                "51999655541");
     }
 
     private void adicionarQuatroGraus(Aluno aluno) {
@@ -78,14 +78,13 @@ public class AlunoServiceTest {
 
     @Test
     void naoDeveBuscarAlunoInexistente() {
-        
+
         UUID id = gerarId();
 
         when(alunoRepository.findById(id)).thenReturn(Optional.empty());
 
-        AlunoNaoEncontradoException exception = assertThrows(AlunoNaoEncontradoException.class, 
-            () -> alunoService.buscarPorId(id)
-        );
+        AlunoNaoEncontradoException exception = assertThrows(AlunoNaoEncontradoException.class,
+                () -> alunoService.buscarPorId(id));
 
         assertEquals("Aluno não encontrado", exception.getMessage());
 
@@ -98,25 +97,25 @@ public class AlunoServiceTest {
         UUID id = gerarId();
 
         Aluno aluno = criarAlunoValido();
-        
+
         when(alunoRepository.findById(id)).thenReturn(Optional.of(aluno));
-        
+
         when(alunoRepository.save(aluno)).thenReturn(aluno);
-        
+
         Aluno resultado = alunoService.adicionarGrau(id);
-        
+
         assertEquals(1, resultado.getGraus());
-        
+
         verify(alunoRepository).findById(id);
         verify(alunoRepository).save(aluno);
-        
+
     }
-    
+
     @Test
     void deveGraduarFaixa() {
-        
+
         UUID id = gerarId();
-    
+
         Aluno aluno = criarAlunoValido();
 
         when(alunoRepository.findById(id)).thenReturn(Optional.of(aluno));
@@ -124,7 +123,7 @@ public class AlunoServiceTest {
         adicionarQuatroGraus(aluno);
 
         when(alunoRepository.save(aluno)).thenReturn(aluno);
-        
+
         Aluno resultado = alunoService.graduarFaixa(id, "Azul");
 
         assertEquals(Faixa.AZUL, resultado.getFaixa());
@@ -144,9 +143,8 @@ public class AlunoServiceTest {
 
         when(alunoRepository.findById(id)).thenReturn(Optional.of(aluno));
 
-        IllegalArgumentException exception =  assertThrows(IllegalArgumentException.class, 
-            () -> alunoService.graduarFaixa(id,"rosa")
-        );
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> alunoService.graduarFaixa(id, "rosa"));
 
         assertEquals("Faixa inválida", exception.getMessage());
 

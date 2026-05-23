@@ -17,11 +17,11 @@ public class AlunoTest {
 
     private Aluno criarAlunoValido() {
         UUID id = gerarId();
-        return new Aluno(id,
-            "Aluno Mock", 
-            18, 
-            "alunomock@mocktest.com.br", 
-            "51999655541");
+        return new Aluno(
+                "Aluno Mock",
+                18,
+                "alunomock@mocktest.com.br",
+                "51999655541");
     }
 
     private void adicionarQuatroGraus(Aluno aluno) {
@@ -55,7 +55,7 @@ public class AlunoTest {
 
     @Test
     void naoDeveAdicionarGrauAlunoInativo() {
-        
+
         Aluno aluno = criarAlunoValido();
 
         aluno.desativar();
@@ -65,26 +65,26 @@ public class AlunoTest {
 
     @Test
     void naoDeveAceitarFaixaNula() {
-        
+
         Aluno aluno = criarAlunoValido();
 
         adicionarQuatroGraus(aluno);
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> aluno.graduarFaixa(null));
-        
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> aluno.graduarFaixa(null));
+
         assertEquals("Nova faixa não pode ser nula", exception.getMessage());
     }
 
     @Test
     void naoDeveAceitarNomeNulo() {
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
-            () -> new Aluno(gerarId(),
-            null, 
-            18, 
-            "alunomock@mocktest.com.br", 
-            "51999655541")
-        );
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> new Aluno(
+                        null,
+                        18,
+                        "alunomock@mocktest.com.br",
+                        "51999655541"));
 
         assertEquals("Nome é obrigatório", exception.getMessage());
     }
@@ -92,83 +92,77 @@ public class AlunoTest {
     @Test
     void naoDeveAceitarEmailNulo() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-            () -> new Aluno(gerarId(), "Aluno Mock", 20,null , "51999998877")
-        );
+                () -> new Aluno("Aluno Mock", 20, null, "51999998877"));
 
         assertEquals("E-mail é obrigatório", exception.getMessage());
     }
 
     @Test
     void naoDeveAceitarIdadeMenorQuatroAnos() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
-            () -> new Aluno(gerarId(), "Aluno Mock", 0, "alunomock@mocktest.com.br", "51999998877")
-        );
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> new Aluno("Aluno Mock", 0, "alunomock@mocktest.com.br", "51999998877"));
 
         assertEquals("Idade inválida", exception.getMessage());
     }
 
     @Test
     void naoDeveAceitarMaisQuatroGraus() {
-        
+
         Aluno aluno = criarAlunoValido();
 
         adicionarQuatroGraus(aluno);
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
-            () -> aluno.adicionarGrau()
-        );
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> aluno.adicionarGrau());
 
         assertEquals("Aluno não pode ultrapassar 4 graus na faixa atual", exception.getMessage());
     }
 
     @Test
     void deveResetarGrausAoGraduar() {
-        
+
         Aluno aluno = criarAlunoValido();
-        
+
         adicionarQuatroGraus(aluno);
-        
+
         aluno.graduarFaixa(Faixa.AZUL);
-        
+
         assertEquals(0, aluno.getGraus());
     }
 
     @Test
     void naoDeveGraduarSemQuatroGraus() {
-        
+
         Aluno aluno = criarAlunoValido();
-        
-        IllegalStateException exception = assertThrows(IllegalStateException.class, 
-            () -> aluno.graduarFaixa(Faixa.AZUL)
-        );
-        
+
+        IllegalStateException exception = assertThrows(IllegalStateException.class,
+                () -> aluno.graduarFaixa(Faixa.AZUL));
+
         assertEquals("Aluno precisa ter 4 graus para mudar de faixa", exception.getMessage());
     }
-    
+
     @Test
     void naoDeveGraduarParaMesmaFaixa() {
-        
+
         Aluno aluno = criarAlunoValido();
-        
+
         adicionarQuatroGraus(aluno);
-        
-        IllegalStateException exception = assertThrows(IllegalStateException.class, 
-            () -> aluno.graduarFaixa(Faixa.BRANCA)
-        );
-        
+
+        IllegalStateException exception = assertThrows(IllegalStateException.class,
+                () -> aluno.graduarFaixa(Faixa.BRANCA));
+
         assertEquals("Aluno já está nessa faixa", exception.getMessage());
     }
-    
+
     @Test
     void naoDeveGraduarAlunoMenorDeIdadeParaFaixaAzul() {
-        
-        Aluno aluno = new Aluno(gerarId(), "Aluno Mock", 15, "alunomock@mocktest.com.br", "51998887715");
+
+        Aluno aluno = new Aluno("Aluno Mock", 15, "alunomock@mocktest.com.br", "51998887715");
 
         adicionarQuatroGraus(aluno);
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, 
-            () -> aluno.graduarFaixa(Faixa.AZUL)
-        );
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> aluno.graduarFaixa(Faixa.AZUL));
 
         assertEquals("Aluno não possui idade mínima para essa graduação", exception.getMessage());
     }
