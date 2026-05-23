@@ -16,10 +16,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.centrotreinamento.bjj.domain.Aluno;
+import com.centrotreinamento.bjj.dto.response.AlunoResponseDTO;
 import com.centrotreinamento.bjj.service.AlunoService;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/alunos")
+@Tag(name = "Aluno", description = "Gerenciamento de alunos do Centro de Treinamento BJJ")
 public class AlunoController {
     
     private final AlunoService alunoService;
@@ -35,7 +39,7 @@ public class AlunoController {
     }
 
     @GetMapping
-    public List<Aluno> listar() {
+    public List<AlunoResponseDTO> listar() {
         return alunoService.listar();
     }
 
