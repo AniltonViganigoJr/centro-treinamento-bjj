@@ -16,6 +16,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.centrotreinamento.bjj.domain.enums.Faixa;
+import com.centrotreinamento.bjj.dto.response.AlunoMetricasDTO;
 import com.centrotreinamento.bjj.dto.response.AlunoResponseDTO;
 import com.centrotreinamento.bjj.service.AlunoService;
 
@@ -34,6 +35,11 @@ public class AlunoControllerTest {
     }
 
     private AlunoResponseDTO instanciarAlunoDTO() {
+        AlunoMetricasDTO metricas = new AlunoMetricasDTO(
+            100, 
+            15, 
+            2);
+
         return new AlunoResponseDTO(
             gerarId(), 
             "Aluno Mock Test", 
@@ -42,7 +48,8 @@ public class AlunoControllerTest {
             LocalDate.of(2026, 5, 4),
             true, 
             Faixa.BRANCA, 
-            0);
+            0,
+            metricas);
     }
 
     @Test
@@ -61,7 +68,10 @@ public class AlunoControllerTest {
                 .andExpect(jsonPath("$[0].ativo").value(aluno.ativo()))
                 .andExpect(jsonPath("$[0].dataMatricula").value(aluno.dataMatricula().toString()))
                 .andExpect(jsonPath("$[0].faixa").value(aluno.faixa().toString().toUpperCase()))
-                .andExpect(jsonPath("$[0].graus").value(aluno.graus()));
+                .andExpect(jsonPath("$[0].graus").value(aluno.graus()))
+                .andExpect(jsonPath("$[0].metricas.totalTreinos").value(aluno.metricas().totalTreinos()))
+                .andExpect(jsonPath("$[0].metricas.totalTreinosMensal").value(aluno.metricas().totalTreinosMensal()))
+                .andExpect(jsonPath("$[0].metricas.totalTreinosSemanal").value(aluno.metricas().totalTreinosSemanal()));
     }
     
 }
