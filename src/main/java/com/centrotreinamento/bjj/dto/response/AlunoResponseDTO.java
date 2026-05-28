@@ -13,5 +13,6 @@ public record AlunoResponseDTO(
     LocalDate dataMatricula,
     boolean ativo,
     Faixa faixa,
-    int graus
+    int graus,
+    AlunoMetricasDTO metricas
 ) {}
