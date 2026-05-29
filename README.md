@@ -1,137 +1,147 @@
-Aqui está o conteúdo completo em um único bloco Markdown:
-
-````md
 # 🥋 Centro de Treinamento BJJ API
 
-API REST desenvolvida com Java e Spring Boot para gerenciamento de alunos e treinos de um centro de treinamento de Brazilian Jiu-Jitsu (BJJ).
+API REST desenvolvida com Java e Spring Boot para gerenciamento de alunos e treinos de um centro de treinamento de Jiu-Jitsu Brasileiro (BJJ).
+
+O projeto foi criado com foco em boas práticas de desenvolvimento backend, arquitetura em camadas, validações, testes automatizados e conteinerização com Docker.
 
 ---
 
-## 🚀 Tecnologias utilizadas
+# 🚀 Tecnologias utilizadas
 
-- Java 21
-- Spring Boot
-- Spring Data JPA
-- PostgreSQL
-- Docker & Docker Compose
-- JUnit 5
-- Mockito
-- Swagger / OpenAPI
-- Maven
-
----
-
-## 📌 Funcionalidades
-
-### 👨‍🎓 Alunos
-- Cadastro de alunos
-- Busca de alunos por ID
-- Listagem de alunos
-- Atualização de dados
-- Ativação e desativação de matrícula
-- Controle de faixa e graus
-- Métricas de treino:
-  - Total de treinos
-  - Quantidade semanal
-  - Quantidade mensal
-
-### 🥋 Treinos
-- Registro de treinos
-- Busca de treino por ID
-- Listagem de treinos
-- Remoção de treinos
-- Associação de treinos a alunos
+* Java 21
+* Spring Boot
+* Spring Web
+* Spring Data JPA
+* PostgreSQL
+* Docker & Docker Compose
+* JUnit 5
+* Mockito
+* Maven
+* Swagger / OpenAPI
 
 ---
 
-## 📂 Estrutura do Projeto
+# 📚 Funcionalidades
+
+## 👨‍🎓 Alunos
+
+* Cadastro de alunos
+* Busca de alunos por ID
+* Listagem de alunos
+* Atualização de dados
+* Remoção de alunos
+* Métricas de treinos do aluno
+
+## 🥋 Treinos
+
+* Cadastro de treinos
+* Associação de treino ao aluno
+* Controle de:
+
+  * Tipo de treino
+  * Duração
+  * Descrição
+  * Data
+
+---
+
+# 🏗️ Estrutura do Projeto
 
 ```bash
 src
-├── controller
-├── service
-├── repository
-├── domain
-├── dto
-├── mapper
-├── config
-└── tests
-````
+ ┣ main
+ ┃ ┣ java
+ ┃ ┃ ┗ com.centrotreinamento.bjj
+ ┃ ┃   ┣ controller
+ ┃ ┃   ┣ domain
+ ┃ ┃   ┣ dto
+ ┃ ┃   ┣ mapper
+ ┃ ┃   ┣ repository
+ ┃ ┃   ┣ service
+ ┃ ┃   ┗ exception
+ ┃ ┗ resources
+ ┃   ┗ application.properties
+ ┗ test
+```
 
 ---
 
-## ⚙️ Configuração do Ambiente
+# ⚙️ Como executar o projeto
 
-### Pré-requisitos
+## ✅ Pré-requisitos
 
 * Java 21+
-* Maven
 * Docker
 * Docker Compose
 
 ---
 
-## 🐳 Executando com Docker
+# 🐳 Executando com Docker
 
-### Subir aplicação + banco PostgreSQL
-
-```bash
-docker compose up --build -d
-```
-
-### Parar containers
-
-```bash
-docker compose down
-```
-
----
-
-## ▶️ Executando localmente
-
-### 1. Clone o repositório
+## 1. Clone o repositório
 
 ```bash
 git clone https://github.com/AniltonViganigoJr/centro-treinamento-bjj.git
 ```
 
-### 2. Entre na pasta do projeto
+## 2. Acesse a pasta do projeto
 
 ```bash
 cd centro-treinamento-bjj
 ```
 
-### 3. Configure as variáveis de ambiente
+## 3. Suba os containers
+
+```bash
+docker compose up --build
+```
+
+Para executar em background:
+
+```bash
+docker compose up -d --build
+```
+
+---
+
+# 🗄️ Banco de Dados
+
+O projeto utiliza PostgreSQL.
+
+As variáveis de ambiente são configuradas no `docker-compose.yml`.
 
 Exemplo:
 
+```yaml
+environment:
+  DB_URL: jdbc:postgresql://postgres:5432/bjj
+  DB_USER: postgres
+  DB_PASSWORD: postgres
+```
+
+---
+
+# 🔧 Configuração local sem Docker
+
+Configure o arquivo `application.properties`:
+
 ```properties
-DB_URL=jdbc:postgresql://localhost:5432/bjj
-DB_USER=postgres
-DB_PASSWORD=postgres
+spring.datasource.url=${DB_URL:jdbc:postgresql://localhost:5432/bjj}
+spring.datasource.username=${DB_USER:postgres}
+spring.datasource.password=${DB_PASSWORD:postgres}
 ```
 
 ---
 
-### 4. Execute a aplicação
+# 📄 Documentação da API
+
+Após iniciar a aplicação, acesse:
 
 ```bash
-./mvnw spring-boot:run
+http://localhost:8080/swagger-ui.html
 ```
 
----
-
-## 🧪 Executando os testes
-
-```bash
-./mvnw test
-```
-
----
-
-## 📖 Documentação da API
-
-Após subir a aplicação:
+ou
 
 ```bash
 http://localhost:8080/swagger-ui/index.html
@@ -139,52 +149,73 @@ http://localhost:8080/swagger-ui/index.html
 
 ---
 
-## 📌 Exemplos de Endpoints
+# 🧪 Executando os testes
 
-### Criar aluno
+```bash
+./mvnw test
+```
+
+ou
+
+```bash
+mvn test
+```
+
+---
+
+# 📌 Exemplo de requisição
+
+## Criar aluno
 
 ```http
 POST /alunos
 ```
 
-### Listar alunos
+### Body
 
-```http
-GET /alunos
-```
-
-### Registrar treino
-
-```http
-POST /treinos
-```
-
-### Buscar treino por ID
-
-```http
-GET /treinos/{id}
+```json
+{
+  "nome": "João Silva",
+  "email": "joao@email.com",
+  "faixa": "BRANCA"
+}
 ```
 
 ---
 
-## 📈 Melhorias futuras
+# ✅ Boas práticas aplicadas
+
+* Arquitetura em camadas
+* DTOs para entrada e saída
+* Mapper pattern
+* Tratamento global de exceções
+* Testes unitários
+* Separação de responsabilidades
+* Uso de variáveis de ambiente
+* Conteinerização da aplicação
+
+---
+
+# 📈 Melhorias futuras
 
 * Autenticação com JWT
-* Controle de permissões
-* Paginação
-* Filtros de busca
-* Relatórios de desempenho
+* Controle de graduação
+* Histórico de evolução do aluno
+* Dashboard de métricas
 * Deploy em cloud
 * CI/CD com GitHub Actions
 
 ---
 
-## 👨‍💻 Autor
+# 👨‍💻 Autor
 
-Desenvolvido por Júnior Viganigo.
+Desenvolvido por Anilton Viganigo Jr.
 
-* GitHub: [https://github.com/AniltonViganigoJr](https://github.com/AniltonViganigoJr)
-* LinkedIn: adicionar-linkedin-aqui
+* GitHub:
+  https://github.com/AniltonViganigoJr
 
-```
-```
+---
+
+# 📜 Licença
+
+Este projeto está sob a licença MIT.
