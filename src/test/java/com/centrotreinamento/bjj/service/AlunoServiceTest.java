@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.centrotreinamento.bjj.domain.Aluno;
 import com.centrotreinamento.bjj.domain.enums.Faixa;
+import com.centrotreinamento.bjj.dto.response.AlunoResponseDTO;
 import com.centrotreinamento.bjj.exception.AlunoNaoEncontradoException;
 import com.centrotreinamento.bjj.repository.AlunoRepository;
 
@@ -71,9 +72,9 @@ public class AlunoServiceTest {
 
         when(alunoRepository.findById(id)).thenReturn(Optional.of(aluno));
 
-        Aluno resultado = alunoService.buscarPorId(id);
+        AlunoResponseDTO resultado = alunoService.buscarPorId(id);
 
-        assertEquals(aluno, resultado);
+        assertEquals(aluno.getId(), resultado.id());
     }
 
     @Test
