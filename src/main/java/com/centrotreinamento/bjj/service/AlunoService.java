@@ -14,7 +14,7 @@ import com.centrotreinamento.bjj.repository.AlunoRepository;
 
 @Service
 public class AlunoService {
-    
+
     private final AlunoRepository alunoRepository;
 
     public AlunoService(AlunoRepository alunoRepository) {
@@ -27,18 +27,17 @@ public class AlunoService {
 
     public List<AlunoResponseDTO> listar() {
         return alunoRepository.findAll()
-            .stream()
-            .map(AlunoMapper::toResponseDTO)
-            .toList();
+                .stream()
+                .map(AlunoMapper::toResponseDTO)
+                .toList();
     }
 
-    public Aluno buscarPorId(UUID id) {
-        return alunoRepository.findById(id).
-               orElseThrow(AlunoNaoEncontradoException::new); 
+    public AlunoResponseDTO buscarPorId(UUID id) {
+        return AlunoMapper.toResponseDTO(buscarEntidadePorId(id));
     }
 
     public Aluno adicionarGrau(UUID id) {
-        Aluno aluno = buscarPorId(id);
+        Aluno aluno = buscarEntidadePorId(id);
         aluno.adicionarGrau();
         return alunoRepository.save(aluno);
     }
@@ -48,14 +47,19 @@ public class AlunoService {
             throw new IllegalArgumentException("Faixa inválida");
         }
 
-        Aluno aluno = buscarPorId(id);
+        Aluno aluno = buscarEntidadePorId(id);
         Faixa novaFaixa = Faixa.converter(faixa);
         aluno.graduarFaixa(novaFaixa);
         return alunoRepository.save(aluno);
     }
 
     public void deletar(UUID id) {
-        Aluno aluno = buscarPorId(id);
+        Aluno aluno = buscarEntidadePorId(id);
         alunoRepository.delete(aluno);
+    }
+
+    private Aluno buscarEntidadePorId(UUID id) {
+        return alunoRepository.findById(id)
+                .orElseThrow(AlunoNaoEncontradoException::new);
     }
 }
