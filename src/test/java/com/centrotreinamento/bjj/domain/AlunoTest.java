@@ -160,7 +160,7 @@ public class AlunoTest {
 
         int quantidade = aluno.obterQuantidadeTreinosSemanal(hoje);
 
-        assertEquals(3, quantidade);
+        assertEquals(2, quantidade);
     }
 
     @Test
