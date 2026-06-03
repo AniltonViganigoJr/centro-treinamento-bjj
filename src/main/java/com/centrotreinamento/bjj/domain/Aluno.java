@@ -96,6 +96,10 @@ public class Aluno {
         return nome;
     }
 
+    public int getIdade() {
+        return idade;
+    }
+
     public String getEmail() {
         return email;
     }
