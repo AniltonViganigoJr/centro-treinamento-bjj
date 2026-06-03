@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.centrotreinamento.bjj.domain.Aluno;
+import com.centrotreinamento.bjj.dto.request.AlunoRequestDTO;
 import com.centrotreinamento.bjj.dto.response.AlunoResponseDTO;
+import com.centrotreinamento.bjj.mapper.AlunoMapper;
 import com.centrotreinamento.bjj.service.AlunoService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,8 +36,8 @@ public class AlunoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Aluno cadastrar(@RequestBody Aluno aluno) {
-        return alunoService.cadastrar(aluno);
+    public AlunoResponseDTO cadastrar(@RequestBody AlunoRequestDTO dto) {
+        return alunoService.cadastrar(dto);
     }
 
     @GetMapping
@@ -49,13 +51,15 @@ public class AlunoController {
     }
 
     @PutMapping("/{id}/graduar")
-    public Aluno graduarFaixa(@PathVariable UUID id, @RequestParam String Faixa) {
-        return alunoService.graduarFaixa(id, Faixa);
+    public AlunoResponseDTO graduarFaixa(@PathVariable UUID id, @RequestParam String faixa) {
+        Aluno aluno = alunoService.graduarFaixa(id, faixa);
+        return alunoService.buscarPorId(aluno.getId());
     }
     
     @PutMapping("/{id}/grau")
-    public Aluno adicionarGrau(@PathVariable UUID id) {
-        return alunoService.adicionarGrau(id);
+    public AlunoResponseDTO adicionarGrau(@PathVariable UUID id) {
+        Aluno aluno = alunoService.adicionarGrau(id);
+        return alunoService.buscarPorId(aluno.getId());
     }
 
     @DeleteMapping("/{id}")
