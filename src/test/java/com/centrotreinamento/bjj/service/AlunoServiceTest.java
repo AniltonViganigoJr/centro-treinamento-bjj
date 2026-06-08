@@ -70,13 +70,11 @@ public class AlunoServiceTest {
 
         Aluno aluno = criarAlunoValido();
 
-        AlunoRequestDTO dto = new AlunoRequestDTO(aluno.getId(),
+        AlunoRequestDTO dto = new AlunoRequestDTO(
                 aluno.getNome(),
                 aluno.getIdade(),
                 aluno.getEmail(),
-                aluno.getTelefone(),
-                aluno.getFaixa(),
-                aluno.getGraus());
+                aluno.getTelefone());
 
         when(alunoRepository.save(any(Aluno.class)))
                 .thenReturn(aluno);
