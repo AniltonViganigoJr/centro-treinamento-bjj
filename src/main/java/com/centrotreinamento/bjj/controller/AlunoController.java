@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.centrotreinamento.bjj.domain.Aluno;
 import com.centrotreinamento.bjj.dto.request.AlunoRequestDTO;
 import com.centrotreinamento.bjj.dto.response.AlunoResponseDTO;
-import com.centrotreinamento.bjj.mapper.AlunoMapper;
 import com.centrotreinamento.bjj.service.AlunoService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/alunos")
@@ -36,7 +36,7 @@ public class AlunoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public AlunoResponseDTO cadastrar(@RequestBody AlunoRequestDTO dto) {
+    public AlunoResponseDTO cadastrar(@Valid @RequestBody AlunoRequestDTO dto) {
         return alunoService.cadastrar(dto);
     }
 
