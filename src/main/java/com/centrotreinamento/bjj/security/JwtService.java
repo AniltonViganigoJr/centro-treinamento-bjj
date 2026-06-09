@@ -4,6 +4,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
+import javax.crypto.SecretKey;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -39,5 +41,17 @@ public class JwtService {
         .parseSignedClaims(token)
         .getPayload()
         .getSubject();
-    } 
+    }
+    
+    public boolean tokenValido(String token) {
+        try {
+            Jwts.parser()
+            .verifyWith((SecretKey) getSigningKey())
+            .build()
+            .parseSignedClaims(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

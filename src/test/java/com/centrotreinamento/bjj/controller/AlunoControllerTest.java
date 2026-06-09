@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -18,8 +19,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.centrotreinamento.bjj.domain.enums.Faixa;
 import com.centrotreinamento.bjj.dto.response.AlunoMetricasDTO;
 import com.centrotreinamento.bjj.dto.response.AlunoResponseDTO;
+import com.centrotreinamento.bjj.security.CustomUserDetailsService;
+import com.centrotreinamento.bjj.security.JwtService;
 import com.centrotreinamento.bjj.service.AlunoService;
 
+@AutoConfigureMockMvc(addFilters = false)
 @WebMvcTest(AlunoController.class)
 public class AlunoControllerTest {
 
@@ -29,6 +33,11 @@ public class AlunoControllerTest {
     @MockitoBean
     private AlunoService alunoService;
 
+    @MockitoBean
+    private JwtService jwtService;
+
+    @MockitoBean
+    private CustomUserDetailsService customUserDetailsService;
 
     private UUID gerarId() {
         return UUID.randomUUID();

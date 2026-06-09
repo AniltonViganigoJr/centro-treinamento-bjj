@@ -4,6 +4,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -11,21 +14,22 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import org.springframework.http.MediaType;
 
 import com.centrotreinamento.bjj.domain.Aluno;
 import com.centrotreinamento.bjj.domain.Treino;
 import com.centrotreinamento.bjj.domain.enums.TipoTreino;
 import com.centrotreinamento.bjj.dto.request.TreinoRequestDTO;
 import com.centrotreinamento.bjj.dto.response.TreinoResponseDTO;
+import com.centrotreinamento.bjj.security.CustomUserDetailsService;
+import com.centrotreinamento.bjj.security.JwtService;
 import com.centrotreinamento.bjj.service.TreinoService;
 
+@AutoConfigureMockMvc(addFilters = false)
 @WebMvcTest(TreinoController.class)
 public class TreinoControllerTest {
 
@@ -41,6 +45,12 @@ public class TreinoControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @MockitoBean
+    private JwtService jwtService;
+
+    @MockitoBean
+    private CustomUserDetailsService customUserDetailsService;
+    
     @MockitoBean
     private TreinoService treinoService;
 
@@ -61,7 +71,9 @@ public class TreinoControllerTest {
     void deveListarTreinos() throws Exception {
         TreinoResponseDTO treinoResponseDTO = instanciarTreinoResponseDTO();
         when(treinoService.listarTreinos()).thenReturn(List.of(treinoResponseDTO));
-        mockMvc.perform(get("/treinos"));
+        mockMvc.perform(get("/treinos"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$[0].descricao").value(treinoResponseDTO.descricao()));
     }
 
     @Test
